@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Swaps</title>
+</head>
+<body>
+    <h1>My Swaps</h1>
+
+    <p><a th:href="@{/staff/dashboard}">Back to Dashboard</a></p>
+
+    <hr>
+    <h2>Swaps I've Posted</h2>
+    <div th:if="${postedSwaps.isEmpty()}">
+        <p>You haven't posted any swaps yet. <a th:href="@{/staff/post-swap}">Post one now?</a></p>
+    </div>
+    <div th:if="${!postedSwaps.isEmpty()}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                    <th>Claimer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="swap : ${postedSwaps}">
+                    <td th:text="${#temporals.format(swap.shift.date, 'MMM dd, yyyy')}">Date</td>
+                    <td th:text="${#temporals.format(swap.shift.startTime, 'HH:mm')}">Time</td>
+                    <td th:text="${swap.shift.unit.displayName}">Unit</td>
+                    <td th:text="${swap.status}">Status</td>
+                    <td th:text="${swap.claimer != null ? swap.claimer.user.fullName : '-'}">Claimer Name</td>
+                    </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+    <h2>Swaps I've Claimed</h2>
+    <div th:if="${claimedSwaps.isEmpty()}">
+        <p>You haven't claimed any swaps yet. <a th:href="@{/staff/available-swaps}">Browse available swaps?</a></p>
+    </div>
+    <div th:if="${!claimedSwaps.isEmpty()}">
+        <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Unit</th>
+                    <th>Status</th>
+                    <th>Original Owner</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="swap : ${claimedSwaps}">
+                    <td th:text="${#temporals.format(swap.shift.date, 'MMM dd, yyyy')}">Date</td>
+                    <td th:text="${#temporals.format(swap.shift.startTime, 'HH:mm')}">Time</td>
+                    <td th:text="${swap.shift.unit.displayName}">Unit</td>
+                    <td th:text="${swap.status}">Status</td>
+                    <td th:text="${swap.originalOwner.user.fullName}">Owner Name</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <hr>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

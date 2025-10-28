@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}"> <head>
+    <title>Staff Dashboard</title> </head>
+<body>
+    <div layout:fragment="content"> <h1 class="mb-4">
+            <i class="bi bi-speedometer2"></i> Staff Dashboard
+        </h1>
+
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title dashboard-card-title">Available Swaps</h5>
+                                <h2 class="mb-0 dashboard-card-value" th:text="${availableSwapsCount}">0</h2>
+                            </div>
+                            <i class="bi bi-arrow-left-right dashboard-card-icon" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-primary bg-opacity-75">
+                        <a th:href="@{/staff/available-swaps}" class="text-white text-decoration-none stretched-link">
+                            View all <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title dashboard-card-title">My Posted Swaps</h5>
+                                <h2 class="mb-0 dashboard-card-value" th:text="${myPostedSwapsCount}">0</h2>
+                            </div>
+                            <i class="bi bi-upload dashboard-card-icon" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                     <div class="card-footer bg-success bg-opacity-75">
+                        <a th:href="@{/staff/my-swaps}" class="text-white text-decoration-none stretched-link">
+                            Manage <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="card-title dashboard-card-title">My Claimed Swaps</h5>
+                                <h2 class="mb-0 dashboard-card-value" th:text="${myClaimedSwapsCount}">0</h2>
+                            </div>
+                            <i class="bi bi-download dashboard-card-icon" style="font-size: 3rem;"></i>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-info bg-opacity-75">
+                        <a th:href="@{/staff/my-swaps}" class="text-white text-decoration-none stretched-link">
+                            View status <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2 d-md-flex">
+                    <a th:href="@{/staff/post-swap}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle"></i> Post a Swap Request
+                    </a>
+                    <a th:href="@{/staff/available-swaps}" class="btn btn-outline-primary">
+                        <i class="bi bi-search"></i> Browse Available Swaps
+                    </a>
+                     <a th:href="@{/staff/my-swaps}" class="btn btn-outline-secondary">
+                        <i class="bi bi-list-check"></i> View My Swaps
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+             <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-badge"></i> My Profile</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> <span th:text="${staff.user.fullName}"></span></p>
+                <p><strong>Role:</strong> <span th:text="${staff.role.displayName}"></span></p>
+                <p><strong>Primary Unit:</strong> <span th:text="${staff.primaryUnit.displayName}"></span></p>
+                <p><strong>Facility:</strong> <span th:text="${staff.facility.name}"></span></p>
+            </div>
+        </div>
+
+    </div> </body>
+</html>

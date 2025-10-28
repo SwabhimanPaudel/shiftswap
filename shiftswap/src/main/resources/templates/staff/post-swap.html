@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Post Swap Request</title>
+</head>
+<body>
+    <h1>Post Swap Request</h1>
+
+    <p><a th:href="@{/staff/dashboard}">Back to Dashboard</a></p>
+
+    <div th:if="${error}" style="color: red;">
+        <p th:text="${error}">Error message goes here</p>
+    </div>
+
+    <form th:action="@{/staff/post-swap}" method="post">
+        <div>
+            <label for="shiftId">Select Shift to Swap:</label><br>
+            <select id="shiftId" name="shiftId" required>
+                <option value="">-- Select a shift --</option>
+                <option th:each="shift : ${shifts}"
+                        th:value="${shift.id}"
+                        th:text="${#temporals.format(shift.date, 'MMM dd, yyyy')} + ' - ' +
+                                 ${#temporals.format(shift.startTime, 'HH:mm')} + ' to ' +
+                                 ${#temporals.format(shift.endTime, 'HH:mm')} + ' (' +
+                                 ${shift.unit.displayName} + ')'">
+                    Shift details here
+                </option>
+            </select>
+        </div>
+        <br>
+        <div>
+            <label for="reason">Reason for Swap:</label><br>
+            <textarea id="reason" name="reason" rows="4" cols="50" required placeholder="E.g., Family emergency, appointment..."></textarea>
+        </div>
+        <br>
+        <button type="submit">Post Swap Request</button>
+    </form>
+
+    <hr>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ShiftSwap</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link th:href="@{/css/custom.css}" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="card shadow-sm login-card"> <div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <i class="bi bi-calendar-check text-primary" style="font-size: 4rem;"></i>
+                            <h2 class="mt-2">ShiftSwap</h2>
+                            <p class="text-muted">Healthcare Shift Coordination</p>
+                        </div>
+
+                        <div th:if="${param.error}" class="alert alert-danger d-flex align-items-center" role="alert">
+                           <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                           <div>Invalid email or password</div>
+                        </div>
+
+                        <div th:if="${param.logout}" class="alert alert-success d-flex align-items-center" role="alert">
+                           <i class="bi bi-check-circle-fill me-2"></i>
+                           <div>You have been logged out</div>
+                        </div>
+
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Email address</label>
+                                <input type="email" class="form-control" id="username" name="username"
+                                       placeholder="name@example.com" required autofocus>
+                            </div>
+                            <div class="mb-4">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                       placeholder="Password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-box-arrow-in-right"></i> Login
+                                </button>
+                            </div>
+                        </form>
+
+                        <hr class="my-4">
+
+                        <div class="text-center small text-muted">
+                            <p class="mb-1">Demo Accounts:</p>
+                            <p class="mb-0">Staff: alice@hospital.com / password123</p>
+                            <p class="mb-0">Manager: manager@hospital.com / password123</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="text-center mt-3 text-muted">
+                    <small>&copy; <span th:text="${#dates.year(#dates.createNow())}">2025</span> ShiftSwap</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

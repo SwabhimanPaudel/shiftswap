@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: ShiftSwap
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shiftswap
+    username: postgres
+    password: dev123  # Use the password you set for PostgreSQL
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update   # Use 'create' if you want it to build fresh every time
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect

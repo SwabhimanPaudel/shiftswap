@@ -14,6 +14,13 @@ import com.swabhiman.shiftswap.domain.model.User;
 import com.swabhiman.shiftswap.domain.repository.ShiftRepository;
 import com.swabhiman.shiftswap.domain.repository.StaffRepository;
 import com.swabhiman.shiftswap.domain.repository.SwapRepository;
+import com.swabhiman.shiftswap.events.EventPublisher;
+import com.swabhiman.shiftswap.events.SwapApprovedEvent;
+import com.swabhiman.shiftswap.events.SwapClaimedEvent;
+import com.swabhiman.shiftswap.events.SwapPostedEvent;
+import com.swabhiman.shiftswap.rules.CompositeRule;
+import com.swabhiman.shiftswap.rules.ValidationResult;
+import com.swabhiman.shiftswap.statemachine.SwapStateMachine;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +34,10 @@ public class SwapService {
     private final SwapRepository swapRepository;
     private final ShiftRepository shiftRepository;
     private final StaffRepository staffRepository;
-    // We'll add StateMachine, AuditService, EventPublisher, and Rules later
+    private final CompositeRule compositeRule;
+    private final SwapStateMachine stateMachine;
+    private final AuditService auditService;
+    private final EventPublisher eventPublisher;
 
     /**
      * Finds the Staff profile associated with a logged-in User.
@@ -87,7 +97,10 @@ public class SwapService {
                 .build();
 
         log.info("Posting swap for shift ID: {} by user: {}", shiftId, user.getEmail());
-        return swapRepository.save(swap);
+        Swap saved = swapRepository.save(swap);
+        auditService.logSwapAction(saved, "POSTED", user, reason);
+        eventPublisher.publish(new SwapPostedEvent(saved));
+        return saved;
     }
 
     /**
@@ -108,20 +121,22 @@ public class SwapService {
             throw new IllegalArgumentException("You cannot claim your own swap.");
         }
 
-        Shift shift = swap.getShift();
+        // Run composite rules
+        ValidationResult validation = compositeRule.validate(swap, claimer);
+        if (!validation.isValid()) {
+            throw new IllegalArgumentException(validation.getMessage());
+        }
 
-        // --- Core Logic: Reassign the shift ---
-        shift.setAssignedStaff(claimer);
-        shiftRepository.save(shift);
-
-        // --- Update the Swap status ---
+        // Transition POSTED -> CLAIMED and set claimer
         swap.setClaimer(claimer);
         swap.setClaimedAt(Instant.now());
-        // Simplified: Go directly to COMPLETED (no approvals)
-        swap.setStatus(SwapStatus.COMPLETED); // Or maybe a new "APPROVED" status
+        stateMachine.transitionTo(swap, SwapStatus.CLAIMED);
         swapRepository.save(swap);
 
-        log.info("Swap ID: {} claimed by user: {}. Shift ID: {} reassigned.", swapId, user.getEmail(), shift.getId());
+        auditService.logSwapAction(swap, "CLAIMED", user, null);
+        eventPublisher.publish(new SwapClaimedEvent(swap));
+
+        log.info("Swap ID: {} claimed by user: {}.", swapId, user.getEmail());
     }
 
      /**
@@ -139,4 +154,67 @@ public class SwapService {
         Staff staff = getStaffByUser(user);
         return swapRepository.findByClaimer(staff);
      }
+
+    // --- New Advanced Methods ---
+
+    @Transactional
+    public Swap approveByOwner(Long swapId, User owner) {
+        Swap swap = swapRepository.findById(swapId)
+                .orElseThrow(() -> new EntityNotFoundException("Swap not found with ID: " + swapId));
+        if (!swap.getOriginalOwner().getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("Only the original owner can approve this swap.");
+        }
+        stateMachine.transitionTo(swap, SwapStatus.OWNER_APPROVED);
+        swap.setOwnerApprovedAt(Instant.now());
+        Swap saved = swapRepository.save(swap);
+        auditService.logSwapAction(saved, "OWNER_APPROVED", owner, null);
+        eventPublisher.publish(new SwapApprovedEvent(saved, SwapStatus.OWNER_APPROVED));
+        return saved;
+    }
+
+    @Transactional
+    public Swap rejectByOwner(Long swapId, User owner, String reason) {
+        Swap swap = swapRepository.findById(swapId)
+                .orElseThrow(() -> new EntityNotFoundException("Swap not found with ID: " + swapId));
+        if (!swap.getOriginalOwner().getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("Only the original owner can reject this swap.");
+        }
+        swap.setRejectionReason(reason);
+        stateMachine.transitionTo(swap, SwapStatus.CANCELLED);
+        Swap saved = swapRepository.save(swap);
+        auditService.logSwapAction(saved, "OWNER_REJECTED", owner, reason);
+        return saved;
+    }
+
+    @Transactional
+    public Swap approveByManager(Long swapId, User manager) {
+        Swap swap = swapRepository.findById(swapId)
+                .orElseThrow(() -> new EntityNotFoundException("Swap not found with ID: " + swapId));
+        stateMachine.transitionTo(swap, SwapStatus.MANAGER_APPROVED);
+        swap.setApprovingManager(manager);
+        swap.setManagerApprovedAt(Instant.now());
+        Swap saved = swapRepository.save(swap);
+        auditService.logSwapAction(saved, "MANAGER_APPROVED", manager, null);
+        eventPublisher.publish(new SwapApprovedEvent(saved, SwapStatus.MANAGER_APPROVED));
+        return saved;
+    }
+
+    @Transactional
+    public Swap rejectByManager(Long swapId, User manager, String reason) {
+        Swap swap = swapRepository.findById(swapId)
+                .orElseThrow(() -> new EntityNotFoundException("Swap not found with ID: " + swapId));
+        swap.setRejectionReason(reason);
+        stateMachine.transitionTo(swap, SwapStatus.CANCELLED);
+        Swap saved = swapRepository.save(swap);
+        auditService.logSwapAction(saved, "MANAGER_REJECTED", manager, reason);
+        return saved;
+    }
+
+    @Transactional
+    public int expireOldSwaps() {
+        List<Swap> expired = swapRepository.findExpiredSwaps(Instant.now());
+        expired.forEach(sw -> sw.setStatus(SwapStatus.EXPIRED));
+        swapRepository.saveAll(expired);
+        return expired.size();
+    }
 }

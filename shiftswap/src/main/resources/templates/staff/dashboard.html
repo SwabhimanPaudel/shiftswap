@@ -2,15 +2,139 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}"> <head>
-    <title>Staff Dashboard</title> </head>
+    <title>Staff Dashboard</title>
+    <style>
+        /* Dashboard Page Specific Styles */
+        .dashboard-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-header h1 {
+            color: white;
+            border: none;
+            margin: 0;
+            padding: 0;
+            font-size: 2.5rem;
+        }
+        
+        .dashboard-header i {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+        
+        .stat-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            height: 100%;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+        
+        .stat-card .card-footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-card .card-footer a {
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card .card-footer a:hover {
+            transform: translateX(5px);
+        }
+        
+        .quick-actions-card {
+            background: white;
+            border-left: 4px solid #0d6efd;
+        }
+        
+        .quick-actions-card .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #0d6efd;
+        }
+        
+        .quick-actions-card .card-header i {
+            color: #0d6efd;
+            margin-right: 0.5rem;
+        }
+        
+        .profile-card {
+            background: white;
+            border-left: 4px solid #198754;
+        }
+        
+        .profile-card .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 2px solid #198754;
+        }
+        
+        .profile-card .card-header i {
+            color: #198754;
+            margin-right: 0.5rem;
+        }
+        
+        .profile-card .card-body p {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            margin: 0;
+            font-size: 1.05rem;
+        }
+        
+        .profile-card .card-body p:last-child {
+            border-bottom: none;
+        }
+        
+        .profile-card .card-body strong {
+            color: #495057;
+            min-width: 150px;
+            display: inline-block;
+            font-weight: 600;
+        }
+        
+        .btn-group-actions .btn {
+            margin: 0.25rem;
+            min-width: 200px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .stat-card .card-body {
+                padding: 1rem;
+            }
+            
+            .btn-group-actions .btn {
+                width: 100%;
+                margin: 0.25rem 0;
+            }
+        }
+    </style>
+</head>
 <body>
-    <div layout:fragment="content"> <h1 class="mb-4">
-            <i class="bi bi-speedometer2"></i> Staff Dashboard
-        </h1>
+    <div layout:fragment="content">
+        <div class="dashboard-header">
+            <h1>
+                <i class="bi bi-speedometer2"></i> Staff Dashboard
+            </h1>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Welcome back! Manage your shifts efficiently.</p>
+        </div>
 
         <div class="row mb-4">
             <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
+                <div class="card text-white bg-primary mb-3 stat-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -29,7 +153,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
+                <div class="card text-white bg-success mb-3 stat-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -48,7 +172,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="card text-white bg-info mb-3">
+                <div class="card text-white bg-info mb-3 stat-card">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
@@ -67,12 +191,12 @@
             </div>
         </div>
 
-        <div class="card mb-4">
+        <div class="card mb-4 quick-actions-card">
             <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Quick Actions</h5>
             </div>
             <div class="card-body">
-                <div class="d-grid gap-2 d-md-flex">
+                <div class="d-grid gap-2 d-md-flex btn-group-actions">
                     <a th:href="@{/staff/post-swap}" class="btn btn-primary">
                         <i class="bi bi-plus-circle"></i> Post a Swap Request
                     </a>
@@ -86,7 +210,7 @@
             </div>
         </div>
 
-        <div class="card">
+        <div class="card profile-card">
              <div class="card-header">
                 <h5 class="mb-0"><i class="bi bi-person-badge"></i> My Profile</h5>
             </div>
@@ -97,6 +221,6 @@
                 <p><strong>Facility:</strong> <span th:text="${staff.facility.name}"></span></p>
             </div>
         </div>
-
-    </div> </body>
+    </div>
+</body>
 </html>

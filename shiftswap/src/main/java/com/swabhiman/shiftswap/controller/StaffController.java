@@ -6,7 +6,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable; // Import the new service
+import org.springframework.web.bind.annotation.ModelAttribute; // Import the new service
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,10 +17,12 @@ import com.swabhiman.shiftswap.domain.model.Shift;
 import com.swabhiman.shiftswap.domain.model.Staff;
 import com.swabhiman.shiftswap.domain.model.Swap; // For success/error messages
 import com.swabhiman.shiftswap.domain.model.User;
+import com.swabhiman.shiftswap.dto.SwapRequest;
 import com.swabhiman.shiftswap.service.StaffService;
 import com.swabhiman.shiftswap.service.SwapService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -69,8 +72,7 @@ public class StaffController {
         Staff staff = staffService.getStaffByUser(user);
         List<Shift> upcomingShifts = staffService.getUpcomingShifts(staff);
         model.addAttribute("shifts", upcomingShifts);
-        // We'll add a DTO later for validation, just pass empty object for now
-        // model.addAttribute("swapRequest", new SwapRequest());
+        model.addAttribute("swapRequest", new SwapRequest());
         return "staff/post-swap"; // Tells Thymeleaf to find "staff/post-swap.html"
     }
 
@@ -79,14 +81,26 @@ public class StaffController {
      */
     @PostMapping("/post-swap")
     public String postSwap(@AuthenticationPrincipal User user,
-                           @RequestParam Long shiftId, // Get shiftId from form
-                           @RequestParam String reason, // Get reason from form
+                           @Valid @ModelAttribute("swapRequest") SwapRequest request,
+                           org.springframework.validation.BindingResult bindingResult,
+                           Model model,
                            RedirectAttributes redirectAttributes) {
+        // Check for validation errors from the DTO
+        if (bindingResult.hasErrors()) {
+            // Return view directly so validation errors are displayed
+            Staff staff = staffService.getStaffByUser(user);
+            List<Shift> upcomingShifts = staffService.getUpcomingShifts(staff);
+            model.addAttribute("shifts", upcomingShifts);
+            model.addAttribute("swapRequest", request);
+            return "staff/post-swap";
+        }
+        
         try {
-            Swap swap = swapService.postSwap(shiftId, user, reason);
-            redirectAttributes.addFlashAttribute("success", // Add a success message
+            // Use the DTO to pass data to the service
+            swapService.postSwap(request.getShiftId(), user, request.getReason());
+            redirectAttributes.addFlashAttribute("success",
                     "Swap posted successfully! It will expire in 48 hours if not claimed.");
-            return "redirect:/staff/dashboard"; // Redirect to dashboard after posting
+            return "redirect:/staff/my-swaps"; // Go to "My Swaps" to see the new posted swap
         } catch (EntityNotFoundException | IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage()); // Show error message
             return "redirect:/staff/post-swap"; // Go back to the form if error
@@ -122,4 +136,26 @@ public class StaffController {
          model.addAttribute("claimedSwaps", claimed);
          return "staff/my-swaps"; // Tells Thymeleaf to find "staff/my-swaps.html"
      }
+
+    @PostMapping("/approve-swap/{swapId}")
+    public String approveOwnSwap(@PathVariable Long swapId, @AuthenticationPrincipal User user, RedirectAttributes ra) {
+        try {
+            swapService.approveByOwner(swapId, user);
+            ra.addFlashAttribute("success", "Swap approved.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/staff/my-swaps";
+    }
+
+    @PostMapping("/reject-swap/{swapId}")
+    public String rejectOwnSwap(@PathVariable Long swapId, @AuthenticationPrincipal User user, @RequestParam(required=false) String reason, RedirectAttributes ra) {
+        try {
+            swapService.rejectByOwner(swapId, user, reason);
+            ra.addFlashAttribute("success", "Swap rejected.");
+        } catch (Exception e) {
+            ra.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/staff/my-swaps";
+    }
 }

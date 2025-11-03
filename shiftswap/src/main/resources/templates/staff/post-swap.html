@@ -1,44 +1,219 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
     <title>Post Swap Request</title>
+    <style>
+        /* Post Swap Page Specific Styles */
+        .page-header {
+            background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header h1 {
+            color: white;
+            border: none;
+            margin: 0;
+            padding: 0;
+            font-size: 2.5rem;
+        }
+        
+        .page-header i {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            padding: 2.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        
+        .form-section {
+            margin-bottom: 2rem;
+        }
+        
+        .form-section:last-of-type {
+            margin-bottom: 0;
+        }
+        
+        .form-section label {
+            display: block;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+        
+        .form-section label i {
+            color: #0dcaf0;
+            margin-right: 0.5rem;
+        }
+        
+        .form-select, .form-control {
+            width: 100%;
+            padding: 0.875rem 1.125rem;
+            font-size: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            background-color: white;
+        }
+        
+        .form-select:focus, .form-control:focus {
+            border-color: #0dcaf0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.15);
+            outline: none;
+            transform: translateY(-1px);
+        }
+        
+        .form-select {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            background-size: 16px 12px;
+            padding-right: 2.5rem;
+        }
+        
+        textarea.form-control {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+        
+        .form-help-text {
+            font-size: 0.875rem;
+            color: #6c757d;
+            margin-top: 0.5rem;
+            font-style: italic;
+        }
+        
+        .submit-btn-container {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid #e9ecef;
+        }
+        
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%);
+            border: none;
+            color: white;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(13, 202, 240, 0.3);
+        }
+        
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #0aa2c0 0%, #0891b2 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+        
+        .error-alert {
+            background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+            color: white;
+            padding: 1rem 1.25rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            border: none;
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
+        }
+        
+        .error-alert i {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        .shift-option {
+            padding: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .form-card {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+            
+            .form-section label {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Post Swap Request</h1>
+    <div layout:fragment="content">
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-plus-circle"></i> Post Swap Request
+            </h1>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Post a shift you'd like to swap with another staff member.</p>
+        </div>
 
-    <p><a th:href="@{/staff/dashboard}">Back to Dashboard</a></p>
+        <div th:if="${error}" class="error-alert alert d-flex align-items-center" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div th:text="${error}">Error message goes here</div>
+        </div>
 
-    <div th:if="${error}" style="color: red;">
-        <p th:text="${error}">Error message goes here</p>
+        <div class="form-card">
+            <form th:action="@{/staff/post-swap}" th:object="${swapRequest}" method="post">
+                <div class="form-section">
+                    <label for="shiftId">
+                        <i class="bi bi-calendar3"></i> Select Shift to Swap
+                    </label>
+                    <select class="form-select" id="shiftId" th:field="*{shiftId}" required>
+                        <option value="">-- Select a shift --</option>
+                        <option th:each="shift : ${shifts}"
+                                th:value="${shift.id}"
+                                th:text="${#temporals.format(shift.date, 'MMM dd, yyyy')} + ' - ' +
+                                         ${#temporals.format(shift.startTime, 'HH:mm')} + ' to ' +
+                                         ${#temporals.format(shift.endTime, 'HH:mm')} + ' (' +
+                                         ${shift.unit.displayName} + ')'">
+                            Shift details here
+                        </option>
+                    </select>
+                    <p class="text-danger" th:if="${#fields.hasErrors('shiftId')}" th:errors="*{shiftId}">Shift selection error</p>
+                    <p class="form-help-text">Choose the shift you want to swap from your upcoming shifts.</p>
+                </div>
+
+                <div class="form-section">
+                    <label for="reason">
+                        <i class="bi bi-chat-left-text"></i> Reason for Swap
+                    </label>
+                    <textarea class="form-control" id="reason" th:field="*{reason}" rows="5" required 
+                              placeholder="E.g., Family emergency, medical appointment, personal commitment..."></textarea>
+                    <p class="text-danger" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}">Reason error</p>
+                    <p class="form-help-text">Provide a brief reason why you need to swap this shift. This helps other staff understand your situation.</p>
+                </div>
+
+                <div class="submit-btn-container">
+                    <button type="submit" class="btn-submit">
+                        <i class="bi bi-upload"></i> Post Swap Request
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <form th:action="@{/staff/post-swap}" method="post">
-        <div>
-            <label for="shiftId">Select Shift to Swap:</label><br>
-            <select id="shiftId" name="shiftId" required>
-                <option value="">-- Select a shift --</option>
-                <option th:each="shift : ${shifts}"
-                        th:value="${shift.id}"
-                        th:text="${#temporals.format(shift.date, 'MMM dd, yyyy')} + ' - ' +
-                                 ${#temporals.format(shift.startTime, 'HH:mm')} + ' to ' +
-                                 ${#temporals.format(shift.endTime, 'HH:mm')} + ' (' +
-                                 ${shift.unit.displayName} + ')'">
-                    Shift details here
-                </option>
-            </select>
-        </div>
-        <br>
-        <div>
-            <label for="reason">Reason for Swap:</label><br>
-            <textarea id="reason" name="reason" rows="4" cols="50" required placeholder="E.g., Family emergency, appointment..."></textarea>
-        </div>
-        <br>
-        <button type="submit">Post Swap Request</button>
-    </form>
-
-    <hr>
-    <form th:action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
 </body>
 </html>

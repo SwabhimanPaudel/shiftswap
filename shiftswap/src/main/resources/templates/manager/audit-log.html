@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Audit Log</title>
+    <style>
+        .timeline { position: relative; padding-left: 2rem; }
+        .timeline::before { content: ""; position: absolute; left: 12px; top: 0; bottom: 0; width: 2px; background: #e5e7eb; }
+        .event { position: relative; margin-bottom: 1.5rem; }
+        .event::before { content: ""; position: absolute; left: -4px; top: 6px; width: 12px; height: 12px; background: var(--color-primary); border-radius: 9999px; box-shadow: 0 0 0 4px rgba(0,123,255,0.15); }
+        .event-card { background: #fff; border-radius: 12px; padding: 1rem; box-shadow: var(--shadow-sm); }
+        .event-meta { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; color: var(--color-text-muted); font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1><i class="bi bi-activity"></i> Audit Log</h1>
+    <div class="timeline">
+        <div class="event" th:each="log : ${auditLogs}">
+            <div class="event-card">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <strong th:text="${log.title}">Swap claimed by Bob</strong>
+                        <div class="text-muted" th:text="${log.description}">Details...</div>
+                    </div>
+                    <div class="event-meta" th:text="${#temporals.format(log.timestamp, 'yyyy-MM-dd HH:mm:ss')}">2025-03-10 12:45:00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

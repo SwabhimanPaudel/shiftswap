@@ -4,23 +4,205 @@
       layout:decorate="~{layout}">
 <head>
     <title>Available Swaps</title>
+    <style>
+        /* Available Swaps Page Specific Styles */
+        .page-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .page-header h1 {
+            color: white;
+            border: none;
+            margin: 0;
+            padding: 0;
+            font-size: 2.5rem;
+        }
+        
+        .page-header i {
+            font-size: 2.5rem;
+            margin-right: 1rem;
+        }
+        
+        .swap-card {
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .swap-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+        }
+        
+        .swap-card .card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 3px solid #0d6efd;
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .swap-card .card-header h5 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.25rem;
+        }
+        
+        .swap-card .card-body {
+            flex: 1;
+            padding: 1.5rem;
+        }
+        
+        .swap-card .card-text {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .swap-card .card-text i {
+            color: #0d6efd;
+            margin-right: 0.75rem;
+            margin-top: 0.25rem;
+            font-size: 1.1rem;
+            min-width: 20px;
+        }
+        
+        .swap-card .card-text strong {
+            color: #495057;
+            margin-right: 0.5rem;
+            min-width: 100px;
+            font-weight: 600;
+        }
+        
+        .swap-card .card-footer {
+            background: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+        
+        .expiry-badge {
+            animation: pulse-badge 2s infinite;
+        }
+        
+        @keyframes pulse-badge {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+        
+        .claim-btn {
+            padding: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .claim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
+        }
+        
+        .empty-state {
+            background: white;
+            padding: 3rem;
+            border-radius: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            color: #0dcaf0;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .page-header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .swap-card .card-body {
+                padding: 1rem;
+            }
+            
+            .swap-card .card-text {
+                flex-direction: column;
+            }
+            
+            .swap-card .card-text strong {
+                min-width: auto;
+                display: block;
+                margin-bottom: 0.25rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div layout:fragment="content">
-        <h1 class="mb-4">
-            <i class="bi bi-arrow-left-right"></i> Available Swaps
-        </h1>
-
-        <div th:if="${swaps.isEmpty()}" class="alert alert-info d-flex align-items-center" role="alert">
-           <i class="bi bi-info-circle-fill me-2"></i>
-           <div>No available swaps at this time. Check back later!</div>
+        <div class="page-header">
+            <h1>
+                <i class="bi bi-arrow-left-right"></i> Available Swaps
+            </h1>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Browse and claim available shift swaps from other staff members.</p>
         </div>
 
-        <div th:if="${!swaps.isEmpty()}" class="row row-cols-1 row-cols-md-2 g-4">
-            <div class="col" th:each="swap : ${swaps}">
-                <div class="card h-100"> <div class="card-header d-flex justify-content-between align-items-center">
+        <div th:if="${swaps.isEmpty()}" class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h3 class="mt-3 mb-2">No Available Swaps</h3>
+            <p class="text-muted">No available swaps at this time. Check back later!</p>
+        </div>
+
+        <div th:if="${!swaps.isEmpty()}" class="row g-4">
+            <div class="col-md-3">
+                <div class="filters-card">
+                    <div class="filter-title"><i class="bi bi-funnel"></i> Filters</div>
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <select class="form-select">
+                            <option>All</option>
+                            <option>Emergency</option>
+                            <option>ICU</option>
+                            <option>Pediatrics</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Shift Type</label>
+                        <div>
+                            <span class="filter-chip">Morning</span>
+                            <span class="filter-chip">Evening</span>
+                            <span class="filter-chip">Night</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary w-100"><i class="bi bi-search"></i> Apply</button>
+                </div>
+            </div>
+            <div class="col-md-9 row row-cols-1 row-cols-md-2 g-4">
+                <div class="col" th:each="swap : ${swaps}">
+                <div class="card h-100 swap-card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h5 class="mb-0" th:text="${swap.shift.unit.displayName}">Unit Name</h5>
-                        <span class="badge bg-warning text-dark" th:if="${swap.hoursUntilExpiry < 24}">
+                        <span class="badge bg-warning text-dark expiry-badge" th:if="${swap.hoursUntilExpiry < 24}">
                             <i class="bi bi-clock-history"></i> Expires in <span th:text="${swap.hoursUntilExpiry}"></span>h
                         </span>
                          <span class="badge bg-secondary" th:unless="${swap.hoursUntilExpiry < 24}">
@@ -50,7 +232,7 @@
                         </p>
 
                         <form th:action="@{/staff/claim-swap/{id}(id=${swap.id})}" method="post" class="d-grid">
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary claim-btn">
                                <i class="bi bi-hand-thumbs-up-fill"></i> Claim This Swap
                             </button>
                         </form>
@@ -59,5 +241,7 @@
                         Posted <span th:text="${#temporals.format(swap.postedAt, 'MMM dd, HH:mm')}">Timestamp</span>
                     </div>
                 </div>
-            </div> </div> </div> </body>
+            </div>
+        </div> </div>
+</body>
 </html>

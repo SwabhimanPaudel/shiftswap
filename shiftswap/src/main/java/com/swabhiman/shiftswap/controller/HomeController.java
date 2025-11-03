@@ -48,6 +48,6 @@ public class HomeController {
         if (authentication != null && authentication.isAuthenticated()) {
             return "redirect:/dashboard"; // If logged in, go to dashboard
         }
-        return "redirect:/login"; // If not, go to login
+        return "landing"; // If not, show landing page
     }
 }

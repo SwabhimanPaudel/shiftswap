@@ -19,7 +19,7 @@ public class AuditService {
     public void logSwapAction(Swap swap, String action, User actor, String details) {
         AuditLog log = AuditLog.builder()
                 .action(action)
-                .details(details)
+                .reasonDetail(details) // <-- This line is corrected from .details(details)
                 .timestamp(Instant.now())
                 .actor(actor)
                 .swap(swap)
@@ -27,5 +27,3 @@ public class AuditService {
         auditLogRepository.save(log);
     }
 }
-
-

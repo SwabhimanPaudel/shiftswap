@@ -40,7 +40,7 @@ public class ManagerController {
         Long facilityId = staffService.getStaffByUser(user).getFacility().getId();
         List<Swap> approvals = swapRepository.findPendingManagerApproval(facilityId);
         model.addAttribute("approvals", approvals);
-        return "manager/approvals";
+        return "manager/pending-approvals"; // <-- This line is corrected
     }
 
     @PostMapping("/approve/{id}")
@@ -57,5 +57,3 @@ public class ManagerController {
         return "redirect:/manager/pending-approvals";
     }
 }
-
-

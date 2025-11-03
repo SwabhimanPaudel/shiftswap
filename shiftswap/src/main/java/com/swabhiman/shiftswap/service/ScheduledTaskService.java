@@ -1,13 +1,7 @@
 package com.swabhiman.shiftswap.service;
 
-import java.time.Instant;
-import java.util.List;
-
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import com.swabhiman.shiftswap.domain.model.Swap;
-import com.swabhiman.shiftswap.domain.repository.SwapRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,18 +10,18 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduledTaskService {
-    private final SwapRepository swapRepository;
+    
+    // Inject SwapService, not SwapRepository
+    private final SwapService swapService; 
 
     // Run every hour
     @Scheduled(cron = "0 0 * * * *")
     public void expireOldSwaps() {
-        List<Swap> expired = swapRepository.findExpiredSwaps(Instant.now());
-        if (!expired.isEmpty()) {
-            log.info("Expiring {} swaps", expired.size());
-            expired.forEach(sw -> sw.setExpired(true));
-            swapRepository.saveAll(expired);
+        log.info("Running scheduled job: expireOldSwaps");
+        // Call the correct method from SwapService
+        int count = swapService.expireOldSwaps(); 
+        if (count > 0) {
+            log.info("Expired {} old swaps", count);
         }
     }
 }
-
-

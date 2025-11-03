@@ -1,11 +1,10 @@
-package com.Swabhiman.shiftswap.integration;
+package com.swabhiman.shiftswap.integration; // <-- This line is corrected
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -117,7 +116,7 @@ class SwapWorkflowTest {
                 .endTime(LocalTime.of(16, 0))
                 .unit(Unit.ICU)
                 .roleRequired(Role.RN)
-                .shiftType(ShiftType.DAY)
+                .shiftType(ShiftType.REGULAR) // <-- This line is corrected
                 .basePayRate(30.0)
                 .build();
         shift = shiftRepository.save(shift);
@@ -169,4 +168,3 @@ class SwapWorkflowTest {
         assertEquals(owner.getId(), updatedShift.getAssignedStaff().getId());
     }
 }
-

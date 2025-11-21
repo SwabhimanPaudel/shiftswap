@@ -1,100 +1,106 @@
 # Shiftswap
 
-**Shiftswap** is a comprehensive healthcare shift coordination platform designed to streamline the process of managing staff schedules, shift swaps, and manager approvals. It ensures compliance with healthcare regulations and internal policies through a robust business rule engine.
+**Shiftswap** is a platform to simplify healthcare staff scheduling. It allows teams to manage shifts, request swaps, and get manager approvals while ensuring compliance with regulations and internal policies.
 
-## 🚀 Features
+---
 
-*   **Staff Management**:
-    *   Staff registration and profile management.
-    *   Staff directory for easy contact lookup.
-    *   Detailed staff views including certifications and roles.
-*   **Shift Management**:
-    *   Automated shift generation.
-    *   Visual schedule views.
-*   **Shift Swapping**:
-    *   Staff can request to swap shifts with eligible colleagues.
-    *   **Intelligent Validation**: The system automatically validates swaps against a set of business rules (see below).
-    *   **State Machine**: Tracks swap requests through their lifecycle (Requested -> Approved/Denied).
-*   **Manager Approval**:
-    *   Managers can review and approve/deny swap requests.
-    *   Dashboard for overseeing staff schedules and pending actions.
-*   **Audit Logging**:
-    *   Comprehensive audit trails for all critical actions (swaps, approvals, etc.).
+## Features
 
-## 🛡️ Business Rules Engine
+### Staff Management
+- Register and manage staff profiles
+- Staff directory for quick contact lookup
+- View detailed info: roles, certifications
 
-Shiftswap enforces strict rules to ensure compliance and fairness:
+### Shift Management
+- Automated shift generation
+- Visual schedule views
 
-*   **Certification Check**: Staff must have the required certifications for the shift.
-*   **Role Compatibility**: Swaps are only allowed between staff with the same role.
-*   **Facility Consistency**: Swaps must occur within the same facility.
-*   **One Shift Per Day**: Prevents staff from being scheduled for multiple shifts on the same day.
-*   **Max Weekly Hours**: Ensures staff do not exceed maximum working hours to prevent burnout.
-*   **Rest Period**: Enforces mandatory rest periods between shifts.
-*   **Schedule Conflict**: Prevents overlapping shifts.
+### Shift Swapping
+- Request swaps with eligible colleagues
+- Automatic validation according to business rules
+- Track swap status: Requested → Approved/Denied
 
-## 🛠️ Tech Stack
+### Manager Approval
+- Approve or deny swap requests
+- Dashboard to monitor schedules and pending actions
 
-*   **Language**: Java 17
-*   **Framework**: Spring Boot 3.5.x
-*   **Build Tool**: Maven
-*   **Database**:
-    *   **Production**: PostgreSQL
-    *   **Test**: H2 In-Memory Database
-*   **Frontend**: Thymeleaf (Server-side templating) with HTML/CSS
-*   **Security**: Spring Security (Authentication & Authorization)
-*   **Utilities**: Lombok, Spring Boot Actuator
+### Audit Logging
+- Full history of critical actions like swaps and approvals
 
-## 📋 Prerequisites
+---
 
-*   **Java 17** or higher installed.
-*   **Maven** installed (or use the included `mvnw` wrapper).
-*   **PostgreSQL** installed and running (for production profile).
+## Business Rules
 
-## ⚙️ Installation & Setup
+- **Certification Check:** Staff must have required certifications
+- **Role Compatibility:** Swaps only between staff with the same role
+- **Facility Consistency:** Swaps limited to the same facility
+- **One Shift Per Day:** No multiple shifts per day
+- **Max Weekly Hours:** Prevents exceeding working hour limits
+- **Rest Periods:** Mandatory rest between shifts
+- **No Schedule Conflicts:** Overlapping shifts prevented
 
-1.  **Clone the repository**:
-    ```bash
-    git clone <repository-url>
-    cd shiftswap
-    ```
+---
 
-2.  **Configure Database**:
-    Update `src/main/resources/application.yml` with your PostgreSQL credentials if running in production mode. By default, it may use H2 for development.
+## Tech Stack
 
-3.  **Build the project**:
-    ```bash
-    ./mvnw clean install
-    ```
+- **Language:** Java 17
+- **Framework:** Spring Boot 3.5.x
+- **Build Tool:** Maven
+- **Database:** PostgreSQL (production), H2 (test)
+- **Frontend:** Thymeleaf (HTML/CSS)
+- **Security:** Spring Security
+- **Utilities:** Lombok, Spring Boot Actuator
 
-4.  **Run the application**:
-    ```bash
-    ./mvnw spring-boot:run
-    ```
+---
 
-5.  **Access the application**:
-    Open your browser and navigate to `http://localhost:8080`.
+## Prerequisites
 
-## 📂 Project Structure
+- Java 17+
+- Maven (or use `mvnw`)
+- PostgreSQL (for production)
 
-*   `src/main/java/com/swabhiman/shiftswap`:
-    *   `config`: Security and application configuration.
-    *   `controller`: Web controllers handling HTTP requests.
-    *   `domain`: JPA Entities and Repositories.
-    *   `dto`: Data Transfer Objects.
-    *   `rules`: Business logic rules for swap validation.
-    *   `service`: Service layer containing business logic.
-    *   `statemachine`: Logic for handling swap request states.
-    *   `events`: Event listeners and publishers.
+---
 
-## 🤝 Contributing
+## Installation & Setup
 
-1.  Fork the repository.
-2.  Create a feature branch (`git checkout -b feature/amazing-feature`).
-3.  Commit your changes (`git commit -m 'Add some amazing feature'`).
-4.  Push to the branch (`git push origin feature/amazing-feature`).
-5.  Open a Pull Request.
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd shiftswap
+```
 
-## 📄 License
+2. Configure database in `src/main/resources/application.yml` (H2 used by default).
 
-[License Information]
+3. Build the project:
+```bash
+./mvnw clean install
+```
+
+4. Run the application:
+```bash
+./mvnw spring-boot:run
+```
+
+5. Open your browser: `http://localhost:8080`
+
+## Project Structure
+
+```bash
+src/main/java/com/swabhiman/shiftswap
+├─ config        # Security and app settings
+├─ controller    # Web controllers
+├─ domain        # Entities & repositories
+├─ dto           # Data transfer objects
+├─ rules         # Business logic for swaps
+├─ service       # Core logic
+├─ statemachine  # Swap request states
+└─ events        # Event listeners/publishers
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature-name`)
+3. Commit your changes (`git commit -m "Description"`)
+4. Push to your branch (`git push origin feature-name`)
+5. Open a pull request

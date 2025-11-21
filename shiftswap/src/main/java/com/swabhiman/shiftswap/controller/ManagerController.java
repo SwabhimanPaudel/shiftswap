@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.GetMapping;  // ✅ ADD THIS
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.swabhiman.shiftswap.domain.model.Swap;
 import com.swabhiman.shiftswap.domain.model.User;
 import com.swabhiman.shiftswap.domain.repository.SwapRepository;
-import com.swabhiman.shiftswap.service.StaffService;
 import com.swabhiman.shiftswap.service.SwapService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,11 +24,10 @@ import lombok.RequiredArgsConstructor;
 public class ManagerController {
     private final SwapService swapService;
     private final SwapRepository swapRepository;
-    private final StaffService staffService;
 
     @GetMapping("/dashboard")
     public String dashboard(@AuthenticationPrincipal User user, Model model) {
-        Long facilityId = staffService.getStaffByUser(user).getFacility().getId();
+        Long facilityId = user.getFacility().getId();  // ✅ Now works!
         List<Swap> pending = swapRepository.findPendingManagerApproval(facilityId);
         model.addAttribute("pendingCount", pending.size());
         return "manager/dashboard";
@@ -37,10 +35,10 @@ public class ManagerController {
 
     @GetMapping("/pending-approvals")
     public String pendingApprovals(@AuthenticationPrincipal User user, Model model) {
-        Long facilityId = staffService.getStaffByUser(user).getFacility().getId();
+        Long facilityId = user.getFacility().getId();  // ✅ Now works!
         List<Swap> approvals = swapRepository.findPendingManagerApproval(facilityId);
         model.addAttribute("approvals", approvals);
-        return "manager/pending-approvals"; // <-- This line is corrected
+        return "manager/pending-approvals";
     }
 
     @PostMapping("/approve/{id}")

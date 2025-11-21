@@ -31,26 +31,26 @@ public class AuditLog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "swap_id", nullable = false)
-    private Swap swap;
+    @JoinColumn(name = "swap_id") // Removed nullable = false
+    private Swap swap; // Can be null for general actions
 
     @ManyToOne
     @JoinColumn(name = "actor_id")
-    private User actor;   // Null if it was a system action
+    private User actor; // Null if it was a system action
 
     @Column(nullable = false)
-    private String action;   // e.g., "POSTED", "CLAIMED", "APPROVED"
+    private String action; // e.g., "POSTED", "CLAIMED", "APPROVED"
 
     @Column(nullable = false)
     private Instant timestamp;
 
-    private String reasonCode;   // e.g., "OVERTIME_RISK"
+    private String reasonCode; // e.g., "OVERTIME_RISK"
 
     @Column(length = 1000)
     private String reasonDetail;
 
-    @Column(columnDefinition = "jsonb") // This is a PostgreSQL-specific type for JSON
-    private String metadata;   // Stored as JSON for flexible data
+    @Column(length = 1000) // This is a PostgreSQL-specific type for JSON
+    private String metadata; // Stored as JSON for flexible data
 
     private String ipAddress;
 

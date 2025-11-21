@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Staff Details</title>
+    <style>
+        .profile-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #0d6efd;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            min-width: 180px;
+        }
+
+        .info-value {
+            color: #212529;
+            flex: 1;
+        }
+
+        .shift-card {
+            background: white;
+            border-left: 4px solid #0d6efd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .shift-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .shift-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #0d6efd;
+        }
+
+        .shift-time {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-assigned {
+            background: #d1f2eb;
+            color: #0f5132;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-approved {
+            background: #d1e7dd;
+            color: #0a3622;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a th:href="@{/staff}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Directory
+            </a>
+        </div>
+
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="d-flex align-items-center">
+                <div class="profile-avatar"
+                    th:text="${staffDetail.firstName.substring(0,1) + staffDetail.lastName.substring(0,1)}">
+                    JD
+                </div>
+                <div class="ms-4">
+                    <h1 style="color: white; border: none; margin: 0; padding: 0;" th:text="${staffDetail.fullName}">
+                        John Doe
+                    </h1>
+                    <p class="mb-0 mt-2" style="opacity: 0.9;">
+                        <span class="badge bg-light text-dark me-2" th:text="${staffDetail.role.displayName}">RN</span>
+                        <span th:text="${staffDetail.facilityName}">Hospital Name</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column: Personal & Professional Info -->
+            <div class="col-md-6">
+                <!-- Contact Information -->
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="bi bi-person-circle"></i> Contact Information
+                    </h5>
+                    <div class="info-row">
+                        <span class="info-label"><i class="bi bi-envelope"></i> Email:</span>
+                        <span class="info-value" th:text="${staffDetail.email}">email@example.com</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label"><i class="bi bi-telephone"></i> Phone:</span>
+                        <span class="info-value" th:text="${staffDetail.phoneNumber}">1234567890</span>
+                    </div>
+                    <div class="info-row" th:if="${staffDetail.dateOfBirth != null}">
+                        <span class="info-label"><i class="bi bi-calendar"></i> Date of Birth:</span>
+                        <span class="info-value"
+                            th:text="${#temporals.format(staffDetail.dateOfBirth, 'yyyy-MM-dd')}">1990-01-01</span>
+                    </div>
+                </div>
+
+                <!-- Professional Information -->
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="bi bi-briefcase"></i> Professional Information
+                    </h5>
+                    <div class="info-row">
+                        <span class="info-label">Role:</span>
+                        <span class="info-value" th:text="${staffDetail.role.displayName}">Registered Nurse</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Primary Unit:</span>
+                        <span class="info-value" th:text="${staffDetail.primaryUnit.displayName}">ICU</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Facility:</span>
+                        <span class="info-value" th:text="${staffDetail.facilityName}">Hospital Name</span>
+                    </div>
+                    <div class="info-row" th:if="${staffDetail.employeeId != null}">
+                        <span class="info-label">Employee ID:</span>
+                        <span class="info-value" th:text="${staffDetail.employeeId}">EMP12345</span>
+                    </div>
+                    <div class="info-row" th:if="${staffDetail.jobTitle != null}">
+                        <span class="info-label">Job Title:</span>
+                        <span class="info-value" th:text="${staffDetail.jobTitle}">Senior Nurse</span>
+                    </div>
+                    <div class="info-row" th:if="${staffDetail.yearsOfExperience != null}">
+                        <span class="info-label">Experience:</span>
+                        <span class="info-value" th:text="${staffDetail.yearsOfExperience + ' years'}">5 years</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Max Weekly Hours:</span>
+                        <span class="info-value" th:text="${staffDetail.maxWeeklyHours}">40</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Reliability Score:</span>
+                        <span class="info-value">
+                            <span class="badge" th:classappend="${staffDetail.reliabilityScore >= 90} ? 'bg-success' : 
+                                                  (${staffDetail.reliabilityScore >= 70} ? 'bg-warning' : 'bg-danger')"
+                                th:text="${staffDetail.reliabilityScore + '%'}">95%</span>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="info-card"
+                    th:if="${staffDetail.certifications != null and !staffDetail.certifications.isEmpty()}">
+                    <h5 class="mb-3">
+                        <i class="bi bi-award"></i> Certifications
+                    </h5>
+                    <p th:text="${staffDetail.certifications}">BLS, ACLS, PALS</p>
+                </div>
+            </div>
+
+            <!-- Right Column: Upcoming Schedule -->
+            <div class="col-md-6">
+                <div class="info-card">
+                    <h5 class="mb-3">
+                        <i class="bi bi-calendar-week"></i> Upcoming Schedule
+                    </h5>
+
+                    <div th:if="${staffDetail.upcomingShifts.isEmpty()}" class="text-center text-muted py-4">
+                        <i class="bi bi-calendar-x" style="font-size: 2rem;"></i>
+                        <p class="mb-0 mt-2">No upcoming shifts scheduled</p>
+                    </div>
+
+                    <div th:each="shift : ${staffDetail.upcomingShifts}" class="shift-card">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <div class="shift-date">
+                                    <i class="bi bi-calendar-event"></i>
+                                    <span th:text="${#temporals.format(shift.date, 'EEEE, MMM dd, yyyy')}">Monday, Jan
+                                        01, 2025</span>
+                                </div>
+                                <div class="shift-time mt-1">
+                                    <i class="bi bi-clock"></i>
+                                    <span th:text="${#temporals.format(shift.startTime, 'HH:mm')}">08:00</span>
+                                    -
+                                    <span th:text="${#temporals.format(shift.endTime, 'HH:mm')}">16:00</span>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="status-badge"
+                                    th:classappend="${shift.status == 'Assigned'} ? 'status-assigned' : 
+                                                      (${shift.status.contains('Pending')} ? 'status-pending' : 'status-approved')"
+                                    th:text="${shift.status}">
+                                    Assigned
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <small class="text-muted">
+                                <i class="bi bi-building"></i> <span th:text="${shift.facilityName}">Hospital</span>
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-hospital"></i> <span th:text="${shift.unit.displayName}">ICU</span>
+                                <span class="mx-2">•</span>
+                                <i class="bi bi-tag"></i> <span th:text="${shift.shiftType}">REGULAR</span>
+                            </small>
+                        </div>
+
+                        <div th:if="${shift.hasActiveSwap}" class="mt-2">
+                            <a th:href="@{/staff/swap/{id}(id=${shift.swapId})}" class="btn btn-sm btn-outline-info">
+                                <i class="bi bi-arrow-left-right"></i> View Swap Details
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

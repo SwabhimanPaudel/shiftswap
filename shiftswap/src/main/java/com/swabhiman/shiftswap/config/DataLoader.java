@@ -64,6 +64,7 @@ public class DataLoader implements CommandLineRunner {
             .firstName("Sarah")
             .lastName("Johnson")
             .userRole(UserRole.MANAGER)
+            .facility(hospital) // Fix: Assign facility to manager
             .build();
         userRepository.save(managerUser);
 

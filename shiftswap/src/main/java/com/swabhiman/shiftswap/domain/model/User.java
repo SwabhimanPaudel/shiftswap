@@ -1,18 +1,29 @@
-package com.swabhiman.shiftswap.domain.model; // This package should be correct
+package com.swabhiman.shiftswap.domain.model;
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-// You'll need to create this Enum in a moment
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.swabhiman.shiftswap.domain.enums.UserRole;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 @Entity
-@Table(name = "users") // This maps the class to the "users" table in your database
+@Table(name = "users")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,10 +43,16 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String lastName;
 
-    @Enumerated(EnumType.STRING) // Stores the enum as a string (e.g., "STAFF")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole userRole;   // STAFF, MANAGER, ADMIN
 
+    // ✅ ADD THIS: Facility relationship for managers
+    @ManyToOne
+    @JoinColumn(name = "facility_id")
+    private Facility facility;
+
+    @Builder.Default // <-- THIS IS THE FIX
     private boolean enabled = true;
 
     // --- Spring Security required methods ---

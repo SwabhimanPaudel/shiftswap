@@ -30,11 +30,19 @@ public class HomeController {
 
         // Check roles and redirect
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_MANAGER"))) {
-            return "redirect:/manager/dashboard"; // You'll build this page later
+            return "redirect:/manager/dashboard";
         }
         if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_STAFF"))) {
-            return "redirect:/staff/dashboard"; // You'll build this page later
+            return "redirect:/staff/dashboard";
         }
+        // --- THIS BLOCK IS ADDED ---
+        // Handle the ADMIN role to prevent the redirect loop
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
+            // Send Admins to the manager dashboard (or an admin-specific one if you create
+            // it)
+            return "redirect:/manager/dashboard";
+        }
+        // --- END OF ADDED BLOCK ---
 
         // A fallback
         return "redirect:/login";
@@ -44,10 +52,32 @@ public class HomeController {
      * This handles the root URL "/"
      */
     @GetMapping("/")
-    public String home(Authentication authentication) {
+    public String home(Authentication authentication, jakarta.servlet.http.HttpServletResponse response) {
+        // Prevent browser from caching this page or the redirect
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+
         if (authentication != null && authentication.isAuthenticated()) {
-            return "redirect:/dashboard"; // If logged in, go to dashboard
+            // Only redirect if the user has one of the known roles
+            boolean hasRole = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_STAFF")
+                            || a.getAuthority().equals("ROLE_MANAGER")
+                            || a.getAuthority().equals("ROLE_ADMIN"));
+
+            if (hasRole) {
+                return "redirect:/dashboard";
+            }
         }
-        return "landing"; // If not, show landing page
+        return "landing"; // If not logged in OR logged in but no role, show landing page
+    }
+
+    /**
+     * This handles the /landing URL
+     * Allows both authenticated and unauthenticated users to view the landing page
+     */
+    @GetMapping("/landing")
+    public String landing() {
+        return "landing"; // Show landing page regardless of authentication status
     }
 }

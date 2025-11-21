@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Staff Directory</title>
+    <style>
+        .directory-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .staff-table {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .reliability-badge {
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .reliability-high {
+            background: #d1f2eb;
+            color: #0f5132;
+        }
+
+        .reliability-medium {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .reliability-low {
+            background: #f8d7da;
+            color: #842029;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="directory-header">
+            <h1 style="color: white; border: none; margin: 0; padding: 0;">
+                <i class="bi bi-people-fill"></i> Staff Directory
+            </h1>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">
+                <span th:text="${totalStaff}">0</span> staff members
+            </p>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-box">
+            <form th:action="@{/staff}" method="get" class="row g-3">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="bi bi-search"></i>
+                        </span>
+                        <input type="text" name="search" class="form-control" th:value="${search}"
+                            placeholder="Search by name, email, role, or facility...">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-funnel"></i> Search
+                    </button>
+                </div>
+            </form>
+            <div th:if="${search != null and !search.isEmpty()}" class="mt-2">
+                <a th:href="@{/staff}" class="btn btn-sm btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Clear Search
+                </a>
+            </div>
+        </div>
+
+        <!-- Staff Table -->
+        <div class="card staff-table">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Facility</th>
+                            <th>Reliability</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="staff : ${staffList}">
+                            <td>
+                                <strong th:text="${staff.fullName}">John Doe</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary" th:text="${staff.role.displayName}">RN</span>
+                            </td>
+                            <td th:text="${staff.email}">email@example.com</td>
+                            <td th:text="${staff.phoneNumber}">1234567890</td>
+                            <td th:text="${staff.facilityName}">Hospital Name</td>
+                            <td>
+                                <span class="reliability-badge"
+                                    th:classappend="${staff.reliabilityScore >= 90} ? 'reliability-high' : 
+                                                      (${staff.reliabilityScore >= 70} ? 'reliability-medium' : 'reliability-low')"
+                                    th:text="${staff.reliabilityScore != null ? staff.reliabilityScore + '%' : 'N/A'}">
+                                    95%
+                                </span>
+                            </td>
+                            <td>
+                                <a th:href="@{/staff/{id}(id=${staff.id})}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye"></i> View Details
+                                </a>
+                            </td>
+                        </tr>
+                        <tr th:if="${staffList.isEmpty()}">
+                            <td colspan="7" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                                <p class="mb-0 mt-2">No staff members found</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

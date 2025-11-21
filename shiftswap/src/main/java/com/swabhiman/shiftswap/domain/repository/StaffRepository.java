@@ -25,4 +25,6 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     // This is a custom query using JPQL (Java Persistence Query Language)
     @Query("SELECT s FROM Staff s WHERE s.role = :role AND s.facility.id = :facilityId")
     List<Staff> findByRoleAndFacility(Role role, Long facilityId);
+
+    Optional<Staff> findByUserEmail(String email);
 }

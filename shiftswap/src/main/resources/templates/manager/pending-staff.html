@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout}">
+
+<head>
+    <title>Pending Staff Registrations</title>
+    <style>
+        .pending-header {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .staff-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .staff-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .staff-card-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 1.25rem;
+            border-bottom: 2px solid #dee2e6;
+            border-radius: 0.75rem 0.75rem 0 0;
+        }
+
+        .staff-card-body {
+            padding: 1.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 0.75rem;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #6c757d;
+            min-width: 150px;
+        }
+
+        .info-value {
+            color: #212529;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .reject-modal .modal-header {
+            background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="pending-header">
+            <h1 style="color: white; border: none; margin: 0; padding: 0;">
+                <i class="bi bi-person-check"></i> Pending Staff Registrations
+            </h1>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Review and approve new staff applications</p>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill"></i>
+            <span th:text="${success}">Success message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Pending Staff Cards -->
+        <div th:if="${pendingStaff.isEmpty()}" class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-inbox" style="font-size: 4rem; color: #dee2e6;"></i>
+                <h4 class="mt-3 text-muted">No Pending Registrations</h4>
+                <p class="text-muted">All staff registrations have been processed.</p>
+            </div>
+        </div>
+
+        <div th:each="staff : ${pendingStaff}" class="staff-card">
+            <div class="staff-card-header">
+                <h4 class="mb-1">
+                    <i class="bi bi-person-badge"></i>
+                    <span th:text="${staff.fullName}">John Doe</span>
+                </h4>
+                <small class="text-muted">
+                    Submitted: <span th:text="${#temporals.format(staff.createdAt, 'yyyy-MM-dd HH:mm')}">2025-01-01
+                        12:00</span>
+                </small>
+            </div>
+
+            <div class="staff-card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-envelope"></i> Email:</span>
+                            <span class="info-value" th:text="${staff.email}">email@example.com</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-telephone"></i> Phone:</span>
+                            <span class="info-value" th:text="${staff.phoneNumber}">1234567890</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-calendar"></i> Date of Birth:</span>
+                            <span class="info-value"
+                                th:text="${#temporals.format(staff.dateOfBirth, 'yyyy-MM-dd')}">1990-01-01</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-building"></i> Facility:</span>
+                            <span class="info-value" th:text="${staff.facilityName}">Hospital Name</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-person-workspace"></i> Role:</span>
+                            <span class="info-value" th:text="${staff.role.displayName}">Registered Nurse</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-briefcase"></i> Job Title:</span>
+                            <span class="info-value" th:text="${staff.jobTitle}">Senior Nurse</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-card-text"></i> Employee ID:</span>
+                            <span class="info-value" th:text="${staff.employeeId}">EMP12345</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="bi bi-clock-history"></i> Experience:</span>
+                            <span class="info-value">
+                                <span
+                                    th:text="${staff.yearsOfExperience != null ? staff.yearsOfExperience + ' years' : 'Not specified'}">5
+                                    years</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-row mt-3" th:if="${staff.certifications != null and !staff.certifications.isEmpty()}">
+                    <span class="info-label"><i class="bi bi-award"></i> Certifications:</span>
+                    <span class="info-value" th:text="${staff.certifications}">BLS, ACLS, PALS</span>
+                </div>
+
+                <hr class="my-3">
+
+                <div class="action-buttons">
+                    <form th:action="@{/manager/approve-staff/{id}(id=${staff.id})}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-check-circle"></i> Approve
+                        </button>
+                    </form>
+
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                        th:data-bs-target="'#rejectModal' + ${staff.id}">
+                        <i class="bi bi-x-circle"></i> Reject
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reject Modal -->
+            <div class="modal fade" th:id="'rejectModal' + ${staff.id}" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content reject-modal">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                <i class="bi bi-exclamation-triangle"></i> Reject Registration
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <form th:action="@{/manager/reject-staff/{id}(id=${staff.id})}" method="post">
+                            <div class="modal-body">
+                                <p>Are you sure you want to reject the registration for <strong
+                                        th:text="${staff.fullName}">Name</strong>?</p>
+                                <div class="mb-3">
+                                    <label for="reason" class="form-label">Reason (optional):</label>
+                                    <textarea class="form-control" id="reason" name="reason" rows="3"
+                                        placeholder="Provide a reason for rejection..."></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-x-circle"></i> Confirm Rejection
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

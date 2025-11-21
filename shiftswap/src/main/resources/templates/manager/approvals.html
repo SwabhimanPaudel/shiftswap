@@ -1,55 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layout">
+
 <head>
     <title>Approvals</title>
     <style>
-        .status-pill { border-radius: 9999px; padding: 0.35rem 0.75rem; font-weight: 600; font-size: 0.8rem; }
-        .status-PENDING { background: linear-gradient(135deg, var(--color-accent) 0%, #ffb300 100%); color: #111827; }
-        .status-APPROVED { background: linear-gradient(135deg, var(--color-success) 0%, #0f8e6a 100%); color: #fff; }
-        .status-REJECTED { background: linear-gradient(135deg, var(--color-danger) 0%, #b91c1c 100%); color: #fff; }
+        .status-pill {
+            border-radius: 9999px;
+            padding: 0.35rem 0.75rem;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .status-PENDING {
+            background: linear-gradient(135deg, var(--color-accent) 0%, #ffb300 100%);
+            color: #111827;
+        }
+
+        .status-APPROVED {
+            background: linear-gradient(135deg, var(--color-success) 0%, #0f8e6a 100%);
+            color: #fff;
+        }
+
+        .status-REJECTED {
+            background: linear-gradient(135deg, var(--color-danger) 0%, #b91c1c 100%);
+            color: #fff;
+        }
     </style>
-    </head>
+</head>
+
 <body>
-<div layout:fragment="content">
-    <h1><i class="bi bi-check2-circle"></i> Approvals</h1>
-    <div class="card">
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0 align-middle">
-                    <thead>
-                        <tr>
-                            <th>Swap ID</th>
-                            <th>From</th>
-                            <th>To</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="row : ${approvals}">
-                            <td th:text="${row.id}">#123</td>
-                            <td th:text="${row.fromUser}">Alice</td>
-                            <td th:text="${row.toUser}">Bob</td>
-                            <td th:text="${#temporals.format(row.date, 'MMM dd, yyyy')}">Mar 10, 2025</td>
-                            <td>
-                                <span class="status-pill" th:classappend="' status-' + ${row.status}" th:text="${row.status}">PENDING</span>
-                            </td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-success btn-sm"><i class="bi bi-check"></i> Approve</button>
-                                    <button class="btn btn-outline-danger btn-sm"><i class="bi bi-x"></i> Reject</button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div layout:fragment="content">
+        <h1><i class="bi bi-check2-circle"></i> Approvals</h1>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead>
+                            <tr>
+                                <th>Swap ID</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="row : ${approvals}">
+                                <td th:text="${row.id}">#123</td>
+                                <td th:text="${row.fromUser}">Alice</td>
+                                <td th:text="${row.toUser}">Bob</td>
+                                <td th:text="${#temporals.format(row.date, 'MMM dd, yyyy')}">Mar 10, 2025</td>
+                                <td>
+                                    <span class="status-pill" th:classappend="' status-' + ${row.status}"
+                                        th:text="${row.status}">PENDING</span>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-success btn-sm"><i class="bi bi-check"></i>
+                                            Approve</button>
+                                        <button class="btn btn-outline-danger btn-sm"><i class="bi bi-x"></i>
+                                            Reject</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
-</html>
 
+</html>

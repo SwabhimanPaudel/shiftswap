@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layout">
+
 <head>
     <title>Post Swap Request</title>
     <style>
@@ -14,7 +14,7 @@
             margin-bottom: 2rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         .page-header h1 {
             color: white;
             border: none;
@@ -22,12 +22,12 @@
             padding: 0;
             font-size: 2.5rem;
         }
-        
+
         .page-header i {
             font-size: 2.5rem;
             margin-right: 1rem;
         }
-        
+
         .form-card {
             background: white;
             border-radius: 1rem;
@@ -36,15 +36,15 @@
             max-width: 700px;
             margin: 0 auto;
         }
-        
+
         .form-section {
             margin-bottom: 2rem;
         }
-        
+
         .form-section:last-of-type {
             margin-bottom: 0;
         }
-        
+
         .form-section label {
             display: block;
             font-weight: 600;
@@ -52,13 +52,14 @@
             margin-bottom: 0.75rem;
             font-size: 1.05rem;
         }
-        
+
         .form-section label i {
             color: #0dcaf0;
             margin-right: 0.5rem;
         }
-        
-        .form-select, .form-control {
+
+        .form-select,
+        .form-control {
             width: 100%;
             padding: 0.875rem 1.125rem;
             font-size: 1rem;
@@ -67,14 +68,15 @@
             transition: all 0.3s ease;
             background-color: white;
         }
-        
-        .form-select:focus, .form-control:focus {
+
+        .form-select:focus,
+        .form-control:focus {
             border-color: #0dcaf0;
             box-shadow: 0 0 0 0.25rem rgba(13, 202, 240, 0.15);
             outline: none;
             transform: translateY(-1px);
         }
-        
+
         .form-select {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
             background-repeat: no-repeat;
@@ -82,26 +84,26 @@
             background-size: 16px 12px;
             padding-right: 2.5rem;
         }
-        
+
         textarea.form-control {
             resize: vertical;
             min-height: 120px;
             font-family: inherit;
         }
-        
+
         .form-help-text {
             font-size: 0.875rem;
             color: #6c757d;
             margin-top: 0.5rem;
             font-style: italic;
         }
-        
+
         .submit-btn-container {
             margin-top: 2rem;
             padding-top: 2rem;
             border-top: 2px solid #e9ecef;
         }
-        
+
         .btn-submit {
             width: 100%;
             padding: 1rem;
@@ -116,17 +118,17 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(13, 202, 240, 0.3);
         }
-        
+
         .btn-submit:hover {
             background: linear-gradient(135deg, #0aa2c0 0%, #0891b2 100%);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(13, 202, 240, 0.4);
         }
-        
+
         .btn-submit:active {
             transform: translateY(0);
         }
-        
+
         .error-alert {
             background: linear-gradient(135deg, #dc3545 0%, #bb2d3b 100%);
             color: white;
@@ -136,32 +138,33 @@
             border: none;
             box-shadow: 0 4px 12px rgba(220, 53, 69, 0.2);
         }
-        
+
         .error-alert i {
             margin-right: 0.75rem;
             font-size: 1.25rem;
         }
-        
+
         .shift-option {
             padding: 0.5rem;
         }
-        
+
         @media (max-width: 768px) {
             .page-header h1 {
                 font-size: 1.75rem;
             }
-            
+
             .form-card {
                 padding: 1.5rem;
                 margin: 0 1rem;
             }
-            
+
             .form-section label {
                 font-size: 1rem;
             }
         }
     </style>
 </head>
+
 <body>
     <div layout:fragment="content">
         <div class="page-header">
@@ -184,16 +187,15 @@
                     </label>
                     <select class="form-select" id="shiftId" th:field="*{shiftId}" required>
                         <option value="">-- Select a shift --</option>
-                        <option th:each="shift : ${shifts}"
-                                th:value="${shift.id}"
-                                th:text="${#temporals.format(shift.date, 'MMM dd, yyyy')} + ' - ' +
+                        <option th:each="shift : ${shifts}" th:value="${shift.id}" th:text="${#temporals.format(shift.date, 'MMM dd, yyyy')} + ' - ' +
                                          ${#temporals.format(shift.startTime, 'HH:mm')} + ' to ' +
                                          ${#temporals.format(shift.endTime, 'HH:mm')} + ' (' +
                                          ${shift.unit.displayName} + ')'">
                             Shift details here
                         </option>
                     </select>
-                    <p class="text-danger" th:if="${#fields.hasErrors('shiftId')}" th:errors="*{shiftId}">Shift selection error</p>
+                    <p class="text-danger" th:if="${#fields.hasErrors('shiftId')}" th:errors="*{shiftId}">Shift
+                        selection error</p>
                     <p class="form-help-text">Choose the shift you want to swap from your upcoming shifts.</p>
                 </div>
 
@@ -201,10 +203,11 @@
                     <label for="reason">
                         <i class="bi bi-chat-left-text"></i> Reason for Swap
                     </label>
-                    <textarea class="form-control" id="reason" th:field="*{reason}" rows="5" required 
-                              placeholder="E.g., Family emergency, medical appointment, personal commitment..."></textarea>
+                    <textarea class="form-control" id="reason" th:field="*{reason}" rows="5" required
+                        placeholder="E.g., Family emergency, medical appointment, personal commitment..."></textarea>
                     <p class="text-danger" th:if="${#fields.hasErrors('reason')}" th:errors="*{reason}">Reason error</p>
-                    <p class="form-help-text">Provide a brief reason why you need to swap this shift. This helps other staff understand your situation.</p>
+                    <p class="form-help-text">Provide a brief reason why you need to swap this shift. This helps other
+                        staff understand your situation.</p>
                 </div>
 
                 <div class="submit-btn-container">
@@ -216,4 +219,5 @@
         </div>
     </div>
 </body>
+
 </html>

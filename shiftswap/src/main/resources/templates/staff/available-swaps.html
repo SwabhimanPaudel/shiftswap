@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="layout">
+
 <head>
     <title>Available Swaps</title>
     <style>
@@ -14,7 +14,7 @@
             margin-bottom: 2rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
-        
+
         .page-header h1 {
             color: white;
             border: none;
@@ -22,12 +22,12 @@
             padding: 0;
             font-size: 2.5rem;
         }
-        
+
         .page-header i {
             font-size: 2.5rem;
             margin-right: 1rem;
         }
-        
+
         .swap-card {
             border-radius: 1rem;
             overflow: hidden;
@@ -36,12 +36,12 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .swap-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
         }
-        
+
         .swap-card .card-header {
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-bottom: 3px solid #0d6efd;
@@ -50,25 +50,25 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .swap-card .card-header h5 {
             color: #2c3e50;
             font-weight: 700;
             margin: 0;
             font-size: 1.25rem;
         }
-        
+
         .swap-card .card-body {
             flex: 1;
             padding: 1.5rem;
         }
-        
+
         .swap-card .card-text {
             margin-bottom: 1rem;
             display: flex;
             align-items: flex-start;
         }
-        
+
         .swap-card .card-text i {
             color: #0d6efd;
             margin-right: 0.75rem;
@@ -76,14 +76,14 @@
             font-size: 1.1rem;
             min-width: 20px;
         }
-        
+
         .swap-card .card-text strong {
             color: #495057;
             margin-right: 0.5rem;
             min-width: 100px;
             font-weight: 600;
         }
-        
+
         .swap-card .card-footer {
             background: #f8f9fa;
             border-top: 1px solid #dee2e6;
@@ -91,20 +91,23 @@
             font-size: 0.875rem;
             color: #6c757d;
         }
-        
+
         .expiry-badge {
             animation: pulse-badge 2s infinite;
         }
-        
+
         @keyframes pulse-badge {
-            0%, 100% {
+
+            0%,
+            100% {
                 opacity: 1;
             }
+
             50% {
                 opacity: 0.7;
             }
         }
-        
+
         .claim-btn {
             padding: 0.875rem;
             font-weight: 600;
@@ -113,12 +116,12 @@
             font-size: 1rem;
             margin-top: 1rem;
         }
-        
+
         .claim-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(13, 110, 253, 0.4);
         }
-        
+
         .empty-state {
             background: white;
             padding: 3rem;
@@ -126,26 +129,26 @@
             text-align: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
-        
+
         .empty-state i {
             font-size: 4rem;
             color: #0dcaf0;
             margin-bottom: 1rem;
         }
-        
+
         @media (max-width: 768px) {
             .page-header h1 {
                 font-size: 1.75rem;
             }
-            
+
             .swap-card .card-body {
                 padding: 1rem;
             }
-            
+
             .swap-card .card-text {
                 flex-direction: column;
             }
-            
+
             .swap-card .card-text strong {
                 min-width: auto;
                 display: block;
@@ -154,13 +157,15 @@
         }
     </style>
 </head>
+
 <body>
     <div layout:fragment="content">
         <div class="page-header">
             <h1>
                 <i class="bi bi-arrow-left-right"></i> Available Swaps
             </h1>
-            <p class="mb-0 mt-2" style="opacity: 0.9;">Browse and claim available shift swaps from other staff members.</p>
+            <p class="mb-0 mt-2" style="opacity: 0.9;">Browse and claim available shift swaps from other staff members.
+            </p>
         </div>
 
         <div th:if="${swaps.isEmpty()}" class="empty-state">
@@ -184,7 +189,7 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Date</label>
-                        <input type="date" class="form-control"/>
+                        <input type="date" class="form-control" />
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Shift Type</label>
@@ -199,49 +204,53 @@
             </div>
             <div class="col-md-9 row row-cols-1 row-cols-md-2 g-4">
                 <div class="col" th:each="swap : ${swaps}">
-                <div class="card h-100 swap-card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0" th:text="${swap.shift.unit.displayName}">Unit Name</h5>
-                        <span class="badge bg-warning text-dark expiry-badge" th:if="${swap.hoursUntilExpiry < 24}">
-                            <i class="bi bi-clock-history"></i> Expires in <span th:text="${swap.hoursUntilExpiry}"></span>h
-                        </span>
-                         <span class="badge bg-secondary" th:unless="${swap.hoursUntilExpiry < 24}">
-                            <i class="bi bi-clock"></i> Expires in <span th:text="${swap.hoursUntilExpiry}"></span>h
-                        </span>
-                    </div>
-                    <div class="card-body">
-                        <p class="card-text mb-2">
-                            <strong><i class="bi bi-calendar3"></i> Date:</strong>
-                            <span th:text="${#temporals.format(swap.shift.date, 'EEEE, MMM dd, yyyy')}">Date</span>
-                        </p>
-                         <p class="card-text mb-2">
-                            <strong><i class="bi bi-clock-fill"></i> Time:</strong>
-                            <span th:text="${#temporals.format(swap.shift.startTime, 'HH:mm')} + ' - ' + ${#temporals.format(swap.shift.endTime, 'HH:mm')}">Time</span>
-                        </p>
-                         <p class="card-text mb-2">
-                            <strong><i class="bi bi-person-badge"></i> Role:</strong>
-                            <span th:text="${swap.shift.roleRequired.displayName}">Role</span>
-                        </p>
-                         <p class="card-text mb-2">
-                            <strong><i class="bi bi-person-up"></i> Posted by:</strong>
-                            <span th:text="${swap.originalOwner.user.fullName}">Owner Name</span>
-                        </p>
-                        <p class="card-text mb-3" th:if="${swap.reason}">
-                            <strong><i class="bi bi-chat-left-text"></i> Reason:</strong>
-                            <span class="text-muted" th:text="${swap.reason}">Reason text</span>
-                        </p>
+                    <div class="card h-100 swap-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0" th:text="${swap.shift.unit.displayName}">Unit Name</h5>
+                            <span class="badge bg-warning text-dark expiry-badge" th:if="${swap.hoursUntilExpiry < 24}">
+                                <i class="bi bi-clock-history"></i> Expires in <span
+                                    th:text="${swap.hoursUntilExpiry}"></span>h
+                            </span>
+                            <span class="badge bg-secondary" th:unless="${swap.hoursUntilExpiry < 24}">
+                                <i class="bi bi-clock"></i> Expires in <span th:text="${swap.hoursUntilExpiry}"></span>h
+                            </span>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text mb-2">
+                                <strong><i class="bi bi-calendar3"></i> Date:</strong>
+                                <span th:text="${#temporals.format(swap.shift.date, 'EEEE, MMM dd, yyyy')}">Date</span>
+                            </p>
+                            <p class="card-text mb-2">
+                                <strong><i class="bi bi-clock-fill"></i> Time:</strong>
+                                <span
+                                    th:text="${#temporals.format(swap.shift.startTime, 'HH:mm')} + ' - ' + ${#temporals.format(swap.shift.endTime, 'HH:mm')}">Time</span>
+                            </p>
+                            <p class="card-text mb-2">
+                                <strong><i class="bi bi-person-badge"></i> Role:</strong>
+                                <span th:text="${swap.shift.roleRequired.displayName}">Role</span>
+                            </p>
+                            <p class="card-text mb-2">
+                                <strong><i class="bi bi-person-up"></i> Posted by:</strong>
+                                <span th:text="${swap.originalOwner.user.fullName}">Owner Name</span>
+                            </p>
+                            <p class="card-text mb-3" th:if="${swap.reason}">
+                                <strong><i class="bi bi-chat-left-text"></i> Reason:</strong>
+                                <span class="text-muted" th:text="${swap.reason}">Reason text</span>
+                            </p>
 
-                        <form th:action="@{/staff/claim-swap/{id}(id=${swap.id})}" method="post" class="d-grid">
-                            <button type="submit" class="btn btn-primary claim-btn">
-                               <i class="bi bi-hand-thumbs-up-fill"></i> Claim This Swap
-                            </button>
-                        </form>
-                    </div>
-                    <div class="card-footer text-body-secondary small">
-                        Posted <span th:text="${#temporals.format(swap.postedAt, 'MMM dd, HH:mm')}">Timestamp</span>
+                            <form th:action="@{/staff/claim-swap/{id}(id=${swap.id})}" method="post" class="d-grid">
+                                <button type="submit" class="btn btn-primary claim-btn">
+                                    <i class="bi bi-hand-thumbs-up-fill"></i> Claim This Swap
+                                </button>
+                            </form>
+                        </div>
+                        <div class="card-footer text-body-secondary small">
+                            Posted <span th:text="${#temporals.format(swap.postedAt, 'MMM dd, HH:mm')}">Timestamp</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div> </div>
+        </div>
 </body>
+
 </html>

@@ -4,77 +4,30 @@
 
 <head>
     <title>Manager Dashboard</title>
-    <style>
-        .page-header {
-            background: linear-gradient(135deg, #007BFF 0%, #0056b3 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 1rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .page-header h1 {
-            color: white;
-            border: none;
-            margin: 0;
-            padding: 0;
-            font-size: 2.5rem;
-        }
-
-        .stat-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-        }
-
-        .stat-value {
-            font-size: 3rem;
-            font-weight: 700;
-            color: #007BFF;
-            margin: 1rem 0;
-        }
-
-        .stat-label {
-            color: #64748B;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-size: 0.9rem;
-        }
-    </style>
 </head>
 
 <body>
     <div layout:fragment="content">
         <div class="page-header">
-            <h1>
-                <i class="bi bi-speedometer2"></i> Manager Dashboard
-            </h1>
-            <p class="mb-0 mt-2" style="opacity: 0.9;">Manage swap approvals and oversee operations.</p>
+            <h1>Manager Dashboard</h1>
+            <p>Manage swap approvals and oversee operations.</p>
         </div>
 
         <div class="row g-4 mb-4">
             <div class="col-md-6">
                 <div class="stat-card">
-                    <div class="stat-label">Pending Approvals</div>
-                    <div class="stat-value" th:text="${pendingCount}">0</div>
-                    <a th:href="@{/manager/pending-approvals}" class="btn btn-primary mt-3">
-                        <i class="bi bi-check2-circle"></i> Review Approvals
-                    </a>
+                    <div class="dashboard-card-title">Pending Approvals</div>
+                    <div class="dashboard-card-value" th:text="${pendingCount}">0</div>
+                    <div class="card-footer">
+                        <a th:href="@{/manager/pending-approvals}" class="btn btn-primary mt-3">
+                            <i class="bi bi-check2-circle"></i> Review Approvals
+                        </a>
+                    </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="stat-card">
-                    <div class="stat-label">Quick Actions</div>
+                    <div class="dashboard-card-title">Quick Actions</div>
                     <div class="d-grid gap-2 mt-3">
                         <a th:href="@{/manager/pending-approvals}" class="btn btn-outline-primary">
                             <i class="bi bi-list-check"></i> View Approval Queue
